@@ -11,6 +11,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchTest {
@@ -23,7 +24,7 @@ public class SearchTest {
 
     By txtYandexSearch = By.id("text");
     By yandexResult = By.xpath("//ul[@id='search-result']/li");
-
+    List<Result> result = new ArrayList<Result>();
 
     public List<WebElement> finds(By locator) throws InterruptedException {
         return waitElementToAppear(locator, 10).findElements(locator);
@@ -65,12 +66,9 @@ public class SearchTest {
             String url = lines[1];
             String description = lines[2];
 
-            System.out.println(title);
-            System.out.println("------------------------");
-            System.out.println(url);
-            System.out.println("------------------------");
-            System.out.println(description);
-            System.out.println("------------------------");
+            String[] splitUrl = url.split(">", 2);
+            for (String a : splitUrl)
+                result.add(new Result(title, a, description));
         }
 
     }
@@ -92,18 +90,18 @@ public class SearchTest {
             String url = lines[1];
             String description = lines[2];
 
-            System.out.println(title);
-            System.out.println("------------------------");
-            System.out.println(url);
-            System.out.println("------------------------");
-            System.out.println(description);
-            System.out.println("------------------------");
+            String[] splitUrl = url.split("www.", 2);
+            for (String a : splitUrl)
+                result.add(new Result(title, a, description));
+
 
         }
     }
 
     @AfterTest
     public void clean() {
+        result.forEach((n) -> System.out.println(n.url));
         driver.quit();
+
     }
 }
